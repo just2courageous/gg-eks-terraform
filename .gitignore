@@ -1,0 +1,15 @@
+# Terraform local state files
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# crash logs
+crash.log
+crash.*.log
+
+# local environment junk
+*.backup
+*.bak
+*.swp
+.DS_Store
