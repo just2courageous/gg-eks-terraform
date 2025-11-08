@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: cpu-demo-pdb
+  namespace: reliability
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: cpu-demo

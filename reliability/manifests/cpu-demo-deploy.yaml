@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpu-demo
+  namespace: reliability
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: cpu-demo }
+  template:
+    metadata:
+      labels: { app: cpu-demo }
+    spec:
+      containers:
+        - name: stress
+          image: polinux/stress:latest
+          # run the stress binary
+          command: ["stress"]
+          args: ["--cpu","2","--timeout","3600s"]
+          resources:
+            requests: { cpu: "100m" }
+            limits:   { cpu: "500m" }
+          # simple always-OK probes for demo
+          livenessProbe:
+            exec: { command: ["sh","-c","echo ok"] }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            exec: { command: ["sh","-c","echo ok"] }
+            initialDelaySeconds: 5
+            periodSeconds: 10
