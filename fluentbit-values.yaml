@@ -1,0 +1,10 @@
+cloudWatch:
+  region: us-east-2
+  logGroupName: /aws/eks/fluentbit-cloudwatch/logs
+  logRetentionDays: 7
+
+serviceAccount:
+  create: true
+  name: fluent-bit
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::399717050894:role/gg-fluentbit-irsa

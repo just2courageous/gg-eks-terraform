@@ -1,0 +1,23 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "FluentBitCWLogsWrite",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "logs:DescribeLogGroups",
+        "logs:DescribeLogStreams",
+        "logs:PutRetentionPolicy"
+      ],
+      "Resource": [
+        "arn:aws:logs:us-east-2:399717050894:log-group:/aws/eks/fluentbit-cloudwatch/logs",
+        "arn:aws:logs:us-east-2:399717050894:log-group:/aws/eks/fluentbit-cloudwatch/logs:log-stream:*",
+        "arn:aws:logs:us-east-2:399717050894:log-group:/aws/containerinsights/*",
+        "arn:aws:logs:us-east-2:399717050894:log-group:/aws/containerinsights/*:log-stream:*"
+      ]
+    }
+  ]
+}
