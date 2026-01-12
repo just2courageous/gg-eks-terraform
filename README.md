@@ -1,83 +1,44 @@
-# gg-eks-terraform
+# gg-eks-terraform — Terraform [Infrastructure as Code] EKS [Elastic Kubernetes Service] platform
 
-## 💼 Project Goal
-Provision an Amazon EKS (Elastic Kubernetes Service) cluster on AWS using 100% Terraform (Infrastructure as Code), not the AWS console.
+## 🎯 Goal
+Provision an **EKS [Elastic Kubernetes Service]** cluster using **Terraform [Infrastructure as Code]** (no AWS Console [Amazon Web Services Console]):
 
-This includes:
-- VPC (Virtual Private Cloud) with subnets
-- EKS control plane
-- Managed node group (worker nodes)
-- IAM (Identity and Access Management) roles for the nodes
-- OIDC (OpenID Connect) support so pods can assume IAM roles later (IRSA)
+- **VPC [Virtual Private Cloud]** with public/private subnets + NAT [Network Address Translation]
+- **EKS [Elastic Kubernetes Service]** control plane + managed node group
+- **IRSA [IAM Roles for Service Accounts]** via OIDC [OpenID Connect]
+- Control-plane logging to **CloudWatch Logs [Amazon CloudWatch Logs]**
+- (Add-on) Fluent Bit [Log shipper] to CloudWatch Logs using IRSA [IAM Roles for Service Accounts]
+- (Add-on) Reliability demo: HPA [Horizontal Pod Autoscaler] + PDB [Pod Disruption Budget]
 
-After `terraform apply`, I connect with `kubectl` and verify the cluster is alive.
+## 🧭 Architecture
+![EKS Terraform architecture](docs/diagrams/gg-eks-terraform-arch.png)
 
-After testing, I run `terraform destroy` to shut everything down and stop spending money.
+**Editable backup**
+- `docs/diagrams/gg-eks-terraform-arch.drawio`
+- Generator: `docs/diagrams/arch.py`
 
-## 📍 Environment
-- AWS Account ID: 399717050894
-- Region: us-east-2
-- AWS CLI profile: gg
-- Planned cluster name: green-guard-gg-eks
-
-## 🔄 Workflow (what this repo proves)
-1. `terraform init && terraform apply`  
-   → Creates the entire Kubernetes platform (EKS cluster + node group + networking).
-
-2. `aws eks update-kubeconfig --name green-guard-gg-eks --region us-east-2 --profile gg`  
-   → Point kubectl at the new cluster.
-
-3. `kubectl get nodes -o wide`  
-   → Prove worker nodes joined successfully.
-
-4. `terraform destroy -auto-approve`  
-   → Tear everything down to cut cost.
-
-## 🖼 Evidence / Screenshots
-All proof screenshots will go in `docs/screenshots/`:
-- `terraform-apply-complete.png` – successful apply showing resources created
-- `kubectl-get-nodes.png` – nodes Ready in the new cluster
-- `terraform-destroy-complete.png` – successful destroy with 0 leftovers
-
-These screenshots are what I show in interviews.
-
-## 🛡 Cost Control
-This repo is part of a bigger story:
-I only keep clusters up while I'm working.  
-When I'm done, I destroy them.  
-This is how I control AWS cost.
-
-This will connect later to P9 (cost guardrails / teardown discipline).
-
-## ⚠ Notes
-- This repo is meant to be public and reviewed by hiring managers.
-- Do NOT commit AWS secrets or keys.
-- The account / region info is here because it's part of the demonstration environment.
-
-
-
-## 📦 P8 — CloudWatch Logging with Fluent Bit + IRSA
-
-**Goal:** Ship pod logs to **Amazon CloudWatch Logs** using **aws-for-fluent-bit** with **IRSA (IAM Roles for Service Accounts)**.
-
-**Key settings**
+## 📍 Environment (demo)
+- **AWS [Amazon Web Services] Account:** 399717050894
 - **Region:** us-east-2
-- **Log Group:** `/aws/eks/fluentbit-cloudwatch/logs`
-- **ServiceAccount:** `logging/fluent-bit` (IRSA annotated)
-- **Retention:** 7 days
+- **AWS CLI [Command Line Interface] profile:** gg
 
-**Install/upgrade (what I ran)**
-```bash
-MSYS_NO_PATHCONV=1 \
-helm upgrade --install aws-for-fluent-bit aws/aws-for-fluent-bit \
-  -n logging \
-  --reuse-values \
-  --set region=us-east-2 \
-  --set cloudWatch.region=us-east-2 \
-  --set-string cloudWatch.logGroupName=/aws/eks/fluentbit-cloudwatch/logs \
-  --set cloudWatch.logRetentionDays=7 \
-  --set serviceAccount.create=true \
-  --set serviceAccount.name=fluent-bit \
-  --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="$ROLE_ARN"
+> Note: `variables.tf` defaults `cluster_name` to `gg-eks-p7`.  
+> If you want `green-guard-gg-eks`, set `-var="cluster_name=green-guard-gg-eks"` when applying.
 
-kubectl -n logging rollout status ds/aws-for-fluent-bit
+## 📦 Repo structure (source of truth)
+- `main.tf`, `versions.tf`, `variables.tf` — Terraform [Infrastructure as Code] (VPC [Virtual Private Cloud] + EKS [Elastic Kubernetes Service])
+- `fluentbit-values.yaml` — Helm [Helm package manager] values for CloudWatch Logs [Amazon CloudWatch Logs]
+- `manifests/irsa/` — IRSA [IAM Roles for Service Accounts] trust/policy JSON [JavaScript Object Notation]
+- `docs/screenshots/` — proof screenshots
+- `docs/evidence.md` — claim → proof mapping
+- `docs/runbook.md` — recreate steps (for later rebuild)
+- `reliability/` — HPA [Horizontal Pod Autoscaler] + PDB [Pod Disruption Budget] demo manifests + proofs
+
+## 🧾 Proof
+See `docs/evidence.md`.
+
+## 🧹 Cost control
+This repo is designed to be created with `terraform apply` and torn down with `terraform destroy` to control AWS [Amazon Web Services] cost.
+
+## ⚠ Safety
+Never commit AWS [Amazon Web Services] secrets (Access Keys [Credential Keys]) or kubeconfig [Kubernetes config] files.

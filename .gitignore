@@ -13,3 +13,5 @@ crash.*.log
 *.bak
 *.swp
 .DS_Store
+.venv/
+venv/
