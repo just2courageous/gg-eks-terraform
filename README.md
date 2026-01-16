@@ -67,10 +67,11 @@ terraform apply
 | ServiceAccount [Kubernetes identity] annotated (IRSA [IAM Roles for Service Accounts]) | [p8-logging-07-sa-irsa.png](docs/screenshots/p8/p8-logging-07-sa-irsa.png) |
 | Helm [package manager] values proof | [p8-logging-08-helm-values.png](docs/screenshots/p8/p8-logging-08-helm-values.png) |
 | Metrics Server [Kubernetes metrics] ready | [p8-metrics-server-ready.png](reliability/screenshots/p8-metrics-server-ready.png) |
-| HPA [Horizontal Pod Autoscaler] scaling observed | [p8-hpa-scaling.png](reliability/screenshots/p8/p8-hpa-scaling.png) |
-| PDB [Pod Disruption Budget] created | [p8-pdb.png](reliability/screenshots/p8/p8-pdb.png) |
-| Self heal proof | [p8-self-heal.png](reliability/screenshots/p8/p8-self-heal.png) |
-| Self heal confirmed | [p8-self-heal-confirmed.png](reliability/screenshots/p8/p8-self-heal-confirmed.png) |
+| HPA [Horizontal Pod Autoscaler] scaling observed | [p8-hpa-scaling.png](reliability/screenshots/p8-hpa-scaling.png) |
+| PDB [Pod Disruption Budget] created | [p8-pdb.png](reliability/screenshots/p8-pdb.png) |
+| Self heal proof | [p8-self-heal.png](reliability/screenshots/p8-self-heal.png) |
+| Self heal confirmed | [p8-self-heal-confirmed.png](reliability/screenshots/p8-self-heal-confirmed.png) |
+
 
 
 ## 🔎 Verify (cluster is healthy)
